@@ -1,14 +1,13 @@
-FROM ubuntu
-MAINTAINER bfosberry
+FROM debian
 
 RUN apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -yq \
-    rsync
-
-RUN mkdir -p /data
-RUN chmod a+rw /data
+  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends rsync && \
+  apt-get clean autoclean && \
+  apt-get autoremove -y && \
+  rm -rf /var/lib/apt/lists/*
 
 EXPOSE 873
-ADD ./run /usr/local/bin/run
 
-ENTRYPOINT ["/usr/local/bin/run"]
+ADD ./entrypoint.sh /
+
+ENTRYPOINT ["/entrypoint.sh"]
