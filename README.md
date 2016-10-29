@@ -13,7 +13,7 @@ docker run --rm -p 873:873 -v /var/www/html:/rsync_dir:rw -e RSYNC_DIR="/rsync_d
 ```
 Synchronize data:
 ```sh
-RSYNC_PASSWORD=rsyncpassword rsync -a mydomain.com_dir  rsync://rsyncuser@192.168.11.5:873/data/
+RSYNC_PASSWORD=rsyncpassword rsync -a mydomain.com_dir  rsync://rsyncuser@YOUR_HOST:873/data/
 ```
 
 ## Environment Variables:
