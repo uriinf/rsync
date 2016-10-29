@@ -1,37 +1,22 @@
 rsync
 =====
 
-Simple rsync server running in a docker container
+This is fork from https://github.com/bfosberry/rsync.
 
-This is based off of https://github.com/nabeken/docker-volume-container-rsync with a few modifications. That project provides a volume for a docker mount, where as this provides just a simple, unauthenticated rsync server.
-
-This is meant to be a temporary, disposable rsync storage. Do NOT use for backups. 
+Do not use it as permanent service. It has been created for periodic synchronization and for CI/CD purposes.
 
 ## Usage
 
-Launch the container via docker:
-```
-docker run -d -p 873 -e "USERNAME:myuser" -e "PASSWORD:mypassword" bfosberry/rsync
-```
-
-You can connect to rsync server inside a container like this:
-
+#### Run docker once and synchronize data to /var/www/html:
 ```sh
-$ rsync rsync://<docker>:<port>/
-data          data directory
+docker run --rm -p 873:873 -v /var/www/html:/rsync_dir:rw -e RSYNC_DIR="/rsync_dir" -e USERNAME="rsyncuser" -e PASSWORD="rsyncpassword" --name rsync uriinf/rsync
 ```
-
-To sync:
-
+Synchronize data:
 ```sh
-$ rsync -avP /path/to/dir rsync://<docker>:<port>/data/
+RSYNC_PASSWORD=rsyncpassword rsync -a mydomain.com_dir  rsync://rsyncuser@192.168.11.5:873/data/
 ```
 
-## Advanced
-
-In default, rsync server accepts a connection only from `192.168.0.0/16` and `172.12.0.0/12` for security reasons.
-You can override via an environment variable like this:
-
-```sh
-$ docker run -d -p 873 -e ALLOW='10.0.0.0/8 x.x.x.x/y' bfosberry/rsync
-```
+## Environment Variables:
+* ALLOW - IP addresses to allow connection in CIDR format, support multiple values splitted with space. By default all private networks allowed: ALLOW="192.168.0.0/16 172.16.0.0/12 10.0.0.0/8"
+* RSYNC_UID - system uid specifies the user name or user ID that file transfers, should be able to read/write to destination directory. default is root. It may be www-data for /var/www/html for example.
+* RSYNC_GID - system gid, look RSYNC_UID, default is root. It may be www-data for /var/www/html for example.
