@@ -1,7 +1,7 @@
 rsync
 =====
 
-This is fork from https://github.com/bfosberry/rsync.
+This is fork from https://github.com/bfosberry/rsync.  
 Link to docker hub https://hub.docker.com
 
 Do not use it as permanent service. It has been created for periodic synchronization and for CI/CD purposes.
